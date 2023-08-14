@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý hồ sơ người dùng</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>  
+    	* {
+    		font-size: 20px;
+    	}
+    	
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .user-table {
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .btn-action {
+            margin-top: 10px;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">Quản lý hồ sơ người dùng</h1>
+        
+        <!-- Thanh tìm kiếm và lọc thông tin người dùng -->
+        <div class="row">
+            <form th:action="@{/admin/user_manager}" class="col-md-6 offset-md-3 mt-3 search-bar input-group">
+                <input type="text" class="form-control" name="keyword" th:value="${keyword}" id="search" placeholder="Nhập từ khóa tìm kiếm...">
+            	<div class="input-group-append">
+                	<button class="btn btn-primary" type="submit">Tìm kiếm</button>
+            	</div>
+            </form>
+        </div>
+
+        <!-- Bảng hiển thị danh sách người dùng -->
+        <div class="user-table">
+            <h3>Danh sách người dùng</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Tên người dùng</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.name}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.role}"></td>
+                        <td>
+                            <button class="btn btn-info btn-action">Sửa</button>
+                            <button class="btn btn-danger btn-action">Xóa</button>
+                        </td>
+                    </tr>
+                    <!-- Thêm thông tin của các người dùng khác nếu có -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Nút thêm mới người dùng -->
+        <div class="text-center">
+            <a th:href="@{/admin/createNewUser}" class="btn btn-primary btn-action">Thêm mới người dùng</a>
+        </div>
+    </div>
+	<div>
+		<a th:href="@{/admin/dashboard}" class="btn btn-primary">Back</a>
+	</div>
+    <!-- Bootstrap JS và jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý đơn hàng</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+		* {
+			font-size: 20px;
+		}
+        body {
+            padding: 20px;
+        }
+
+        .order-table {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">Quản lý đơn hàng</h1>
+        <form th:action="@{/admin/order_manager}" method="get" class="input-group mb-3">
+           	<input type="text" name="keyword" class="form-control" th:value="${name}" placeholder="Tìm kiếm đơn hàng">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+            </div>
+        </form>
+        <div class="order-table">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Số đơn hàng</th>
+                        <th>Tên khách hàng</th>
+                        <th>Ngày đặt hàng</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td>ORDER #<span th:text="${order.id}"></span></td>
+                        <td th:text="${order.hoten}"></td>
+                        <td th:text="${#dates.format(order.order_date, 'HH:mm:ss dd/MM/yyyy')}"></td>
+                        <td>
+                        	<span th:if="${order.status == null}" class="card-text badge badge-danger">Đã hủy</span>
+			                <div th:if="${order.status != null}">
+			                	<span th:if="${order.status}" class="card-text badge badge-success">Đã giao hàng</span>
+			                	<span th:if="${!order.status}" class="card-text badge badge-warning">Chờ duyệt</span>
+			                </div>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" th:href="@{'/admin/order_detail/' + ${order.id}}">Xem chi tiết</a>
+                        </td>
+                    </tr>
+                    <!-- Các dòng khác -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+	<div>
+		<a class="btn btn-primary mt-3" th:href="@{/admin/dashboard}">Back</a>
+	</div>
+    <!-- Bootstrap JS và jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Giỏ hàng</title>
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<style>
+		.check-column {
+			width: 5%;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- header -->
+	<header class="py-2 bg-primary text-white">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<h1>
+						<i class="fas fa-shopping-cart"></i> Giỏ hàng
+					</h1>
+				</div>
+			</div>
+		</div>
+	</header>
+	<h1 th:if="${numberOfItems == 0}">Chưa có gì trong giỏ hàng</h1>
+	<!-- cart content -->
+	<section th:if="${numberOfItems > 0}" id="cart" class="py-4">
+		<div class="container">
+			<form th:action="@{/checkout}" th:object="${cart}" class="row" method="post">
+				<div class="col-md-8">
+					<div class="card">
+						<div class="card-header">
+							<h4>Giỏ hàng của bạn</h4>
+						</div>
+						<div class="card-body">
+							Cart items
+							<div class="row border-top py-3 mt-3 justify-content-around" th:each="item : ${cart.cartItems}">
+								<div class="col-md-2">
+									<img th:src="|data:image/jpeg;base64,${item.book.image}|" alt="book" class="img-fluid"/>
+								</div>
+								<div class="col-md-3">
+									<h5 th:text="${item.book.title}"></h5>
+									<small th:text="${item.book.author}"></small>
+								</div>
+								<div class="col-md-6">
+									<div class="row d-flex justify-content-between align-items-center">
+										<div class="input-group col-md-5">
+											<div class="input-group-prepend">
+												<span class="input-group-text minus_btn"><i class="fas fa-minus"></i></span>
+											</div>
+											<input type="text" value="1" th:value="${item.quantity}"
+												class="form-control quantity" min="1" name="quantity">
+											<div class="input-group-append">
+												<a type="submit" class="input-group-text plus_btn" th:href="@{'/updateCart/' + ${item.book.id}}"><i class="fas fa-plus"></i></a>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<a th:href="@{'/removeItem/' + ${item.book.id}}" class="btn btn-danger"
+												th:attr="data-action-url=@{'/removeItem/' + ${item.book.id}}"
+	                                       		onclick="confirmXoaItem(this.getAttribute('data-action-url'))">
+												<i class="fas fa-trash"></i>
+											</a>
+										</div>
+										<div class="col-md-5">
+											<p>Đơn giá: <span class="price" th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 2, 'POINT').replace('.00', '')}"></span> VNĐ</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card">
+						<div class="card-body">
+							<h4>Tổng tiền</h4>
+							<p class="text-right"><span id="totalPrice" th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 2, 'POINT').replace('.00', '')}"></span> VNĐ</p>
+							<hr>
+							<div class="text-center">
+								<button type="submit" class="btn btn-primary">Đặt hàng</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</section>
+	<footer class="m-3">
+		<a th:href="@{/trangchu}" class="btn btn-primary">Trở về trang chủ</a>
+	</footer>
+	<script src="https://kit.fontawesome.com/5e2f0ecaae.js"
+		crossorigin="anonymous"></script>
+	<script>
+	    const plus_btn = document.querySelectorAll(".plus_btn")
+	    const minus_btn = document.querySelectorAll(".minus_btn")
+	    const input_quantity = document.querySelectorAll(".quantity");
+	    const cart_length = plus_btn.length;
+	    const delete_btn = document.querySelectorAll('a[data-delete-id]');
+	    const prices = document.querySelectorAll('.price');
+	    const totalPrice = document.getElementById("totalPrice");
+	    
+	    for(let i = 0;i < cart_length;i++) {
+	        plus_btn[i].addEventListener('click', ()=> {
+	            let quantity = parseInt(input_quantity[i].value);
+	            quantity += 1;
+	            input_quantity[i].value = quantity;
+	            changeTotalMoney()
+	        } );
+	
+	        minus_btn[i].addEventListener('click', ()=> {
+	            let quantity = parseInt(input_quantity[i].value);
+	            if(quantity > 1) quantity -= 1;
+	            input_quantity[i].value = quantity;
+	            changeTotalMoney()
+	        } );
+	    }
+	    function changeTotalMoney() {
+            var totalPrice = 0;
+            for (let i = 0; i < cart_length; i++) {
+                console.log(input_quantity[i].value)
+                console.log(prices[i].textContent)
+                totalPrice += parseFloat(prices[i].textContent.replace(",",""))*parseInt(input_quantity[i].value)
+            }
+            document.getElementById("totalPrice").textContent = totalPrice.toLocaleString().replaceAll(".",",");
+        }
+	    
+	    
+	    function confirmXoaItem(actionUrl) {
+			if (confirm("Bạn chắc chắn muốn bỏ mặt hàng này khỏi giỏ hàng chứ?")) {
+	            window.location.href = actionUrl;
+	        }else {
+	        	event.preventDefault();
+	        }
+		}
+    </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống kê và báo cáo</title>
+    <!-- Add Bootstrap CSS link here -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-4">
+        <h1>Thống kê và báo cáo</h1>
+        <hr>
+
+        <!-- Filters for selecting year and month -->
+        <div class="form-row mb-4">
+            <div class="col-auto">
+                <label for="yearSelect">Năm:</label>
+                <select class="form-control" id="yearSelect">
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Area chart to display revenue data -->
+        <div style="width: 800px; height: 500px" class="mb-5">
+            <canvas id="myChart"></canvas>
+        </div>
+
+
+        <!-- Table to display order data -->
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>ID đơn hàng</th>
+                    <th>Tên khách hàng</th>
+                    <th>Ngày đặt hàng</th>
+                    <th>Tổng tiền</th>
+                </tr>
+            </thead>
+            <tbody id="orderData">
+                <!-- Order data will be populated here -->
+                <tr>
+                    <td>1</td>
+                    <td>Khách hàng 1</td>
+                    <td>2023-07-01</td>
+                    <td>100.00 USD</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Bootstrap JS and jQuery scripts here -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Add Chart.js script for drawing the revenue chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script type="text/javascript">
+
+        const select_year = document.getElementById("yearSelect");
+        const current_year = select_year.value;
+        const ctx = document.getElementById('myChart');
+
+        let myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        if (myChart) {
+            myChart.destroy();
+        }
+        getRevenueChart(current_year);
+
+        select_year.addEventListener('change', function () {
+            if (myChart) {
+                myChart.destroy();
+            }
+            getRevenueChart(select_year.value);
+        })
+
+
+        function getRevenueChart(year) {
+            async function getData() {
+                const url = `http://localhost:8080/admin/api/revenue?year=${year}`;
+                await fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        getStatistic(data);
+                        console.log(data)
+                    })
+            }
+
+
+            function getStatistic(data) {
+                const months = data.map(function (element) {
+                    return element.month;
+                });
+
+                const total_payments = data.map(function (element) {
+                    return element.total_payment;
+                })
+
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'October', 'December'],
+                        datasets: [{
+                            label: 'Doanh thu',
+                            data: total_payments,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+            }
+
+
+            getData();
+        }
+
+
+    </script>
+</body>
+
+</html>

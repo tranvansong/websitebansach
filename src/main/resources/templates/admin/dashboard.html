@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+    	* {
+    		font-size: 20px;
+    	}
+    	
+        .nav_bg {
+            background: #0077ff;
+        }
+
+        .card-body {
+            background: antiquewhite;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark nav_bg">
+        <a class="navbar-brand" href="#">Admin Dashboard</a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/trangchu}">Trang chủ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Sản phẩm</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Đơn hàng</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Người dùng</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Content -->
+    <div class="container">
+        <h1 class="p-3">Admin Dashboard</h1>
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Quản lý người dùng</h5>
+                        <p class="card-text">Thêm, xem, chỉnh sửa và xóa tài khoản người dùng.</p>
+                        <a th:href="@{/admin/user_manager}" class="btn btn-primary">Quản lý</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Quản lý sách</h5>
+                        <p class="card-text">Thêm, xem, chỉnh sửa và xóa sách từ cửa hàng.</p>
+                        <a th:href="@{/admin/view-list-books}" class="btn btn-primary">Quản lý</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Quản lý đơn hàng</h5>
+                        <p class="card-text">Xem và xử lý các đơn hàng từ người dùng.</p>
+                        <a th:href="@{/admin/order_manager}" class="btn btn-primary">Quản lý</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Quản lý bình luận</h5>
+                        <p class="card-text">Quản lý bình luận từ người dùng.</p>
+                        <a href="#" class="btn btn-primary">Quản lý</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Thống kê, báo cáo</h5>
+                        <p class="card-text">Xem thống kê doanh thu, đơn hàng,...</p>
+                        <a th:href="@{/admin/statistic}" class="btn btn-primary">Quản lý</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-3">
+        <p>Hello</p>
+    </footer>
+</body>
+
+</html>

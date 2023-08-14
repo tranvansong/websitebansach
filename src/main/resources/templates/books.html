@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>Books</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<h1 class="text-center">Danh sách sách</h1>
+		</div>
+		<form th:action="@{/admin/view-list-books}" method="get" class="input-group mb-3">
+			<input type="text" name="keyword" class="form-control" th:value="${keyword}" placeholder="Tìm kiếm sách">
+            <button class="btn btn-primary input-group-text" type="submit">Tìm kiếm</button>
+		</form>
+		<div style="color: red; font-size: 20px"><span  id="errorDelete" th:text="${errorDelete}"></span></div>
+		<table class="table table-striped table-bordered">
+			<thead class="table-dark">
+				<tr>
+					<th>Id</th>
+					<th>Tiêu đề</th>
+					<th>Tác giả</th>
+					<th>Thể loại</th>
+					<th>Ngày phát hành</th>
+					<th>Ảnh bìa</th>
+					<th>Số lượng đã bán</th>
+					<th th:if="${loggedIn && isAdmin}">Action</th>
+				</tr>
+			</thead>
+            <tbody>
+                <tr th:each=" book : ${books}">
+                    <td th:text="${book.id}"></td>
+                    <td th:text="${book.title}"></td>
+                    <td th:text="${book.author}"></td>
+                    <td th:text="${book.category.name}"></td>
+                    <td th:text="${#dates.format(book.releaseDate, 'dd/MM/yyyy')}"></td>
+                    <td><img th:src="*{'data:image/jpeg;base64,'+{book.image}}" style="width: 80px;height: 80px;" alt="Book Image">
+                    </td>
+                    <td th:text="${book.sold}"></td>
+                    <td th:if="${loggedIn && isAdmin}">
+                    	<a th:href="@{/admin/view-book/{id}(id=${book.id})}" class="btn btn-success" style="font-size: 15px">Xem chi tiết</a>
+                        <a th:href="@{/admin/delete/{id}(id=${book.id})}" style="font-size: 15px"
+                                       	th:attr="data-action-url=@{/admin/delete/{id}(id=${book.id})}"
+                                       	onclick="confirmXoa(this.getAttribute('data-action-url'))" class="btn btn-danger">Xóa</a>
+                    </td>
+                </tr>
+            </tbody>
+		</table>
+	<a th:if="${loggedIn && isAdmin}" th:href="@{/admin/newBook}" class="btn btn-success col-lg-12 mb-3 mt-5" style="font-size: 20px">Thêm sách mới</a>
+	</div>
+	<a th:href="@{/admin/dashboard}" class="btn btn-warning mb-3">Trở về dashboard</a>
+	<script type="text/javascript">
+		function confirmXoa(actionUrl) {
+			if (confirm("Bạn chắc chắn muốn xóa sách này?")) {
+	            window.location.href = actionUrl;
+	        }else {
+	        	event.preventDefault();
+	        }
+		}
+		
+		setTimeout(function() {
+			document.getElementById("errorDelete").style.display = "none";
+		}, 2000)
+	</script>
+</body>
+</html>

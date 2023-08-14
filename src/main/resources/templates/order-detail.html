@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <title>Chi tiết đơn hàng</title>
+    <style type="text/css">
+    	* {
+    		font-size: 18px;
+    	}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+          <div class="col-md-8 mx-auto">
+            <div class="card mt-3">
+              <div class="card-header">
+                <h3 class="text-center">Chi tiết đơn hàng</h3>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Đơn hàng #<span th:text="${order.id}"></span></h5>
+                <p class="card-text">Ngày đặt hàng: <b th:text="${#dates.format(order.order_date, 'HH:mm:ss dd/MM/yyyy')}"></b></p>
+                <p class="card-text">Tổng tiền: <b th:text="${#numbers.formatDecimal(order.total_payment, 0, 'COMMA', 2, 'POINT').replace('.00', '')} + ' VNĐ'"></b></p>
+                <hr>
+                <h5 class="card-title">Sách đã mua</h5>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Tên sách</th>
+                      <th>Số lượng</th>
+                      <th>Giá</th>
+                      <th>Thành tiền</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="item : ${cartItems}">
+                      <td ><a th:href="@{'/chi-tiet-sach/' + ${item.book.title}}" ><strong th:text="${item.book.title}"></strong></a></td>
+                      <td th:text="${item.quantity}">2</td>
+                      <td><span th:text="${#numbers.formatDecimal(item.book.price, 0, 'COMMA', 2, 'POINT').replace('.00', '')}"></span> VNĐ</td>
+                      <td><span th:text="${#numbers.formatDecimal(item.quantity * item.book.price, 0, 'COMMA', 2, 'POINT').replace('.00', '')}"></span> VNĐ</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <hr>
+                <h5 class="card-title">Thông tin người nhận hàng</h5>
+                <p class="card-text">Tên người nhận: <b th:text="${order.hoten}"></b></p>
+                <p class="card-text">Email: <b th:text="${order.email}"></b></p>
+                <p class="card-text">Số điện thoại: <b th:text="${order.sodt}"></b></p>
+                <p class="card-text">Địa chỉ: <b th:text="${order.diachi}"></b></p>
+                <hr>
+                <h5 class="card-title">Trạng thái đơn hàng</h5>
+                <p th:if="${order.status == null}" class="card-text badge badge-danger">Đã hủy</p>
+                <div th:if="${order.status != null}">
+                	<p th:if="${order.status}" class="card-text badge badge-success">Đã giao hàng</p>
+                	<p th:if="${!order.status}" class="card-text badge badge-warning">Đang giao hàng</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a th:href="@{/trangchu}" class="btn btn-warning m-3">Trở về trang chủ</a>
+</body>
+</html>

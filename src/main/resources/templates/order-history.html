@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch sử mua hàng</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{css/order-history.css}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Order History</h1>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Order list -->
+                <div class="card">
+                    <div class="card-header">
+                        Order List
+                    </div>
+                    <div class="card-body">
+                        <h2>Danh sách đơn hàng của bạn</h2>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4" th:each="order: ${orders}">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${'Đơn hàng #'+ {order.id}}"></h5>
+                                        <p class="card-text">Ngày đặt hàng: <span th:text="${#dates.format(order.order_date, 'HH:mm:ss dd/MM/yyyy')}"></span></p>
+                                        <p class="card-text">Tổng tiền: <span th:text="${#numbers.formatDecimal(order.total_payment, 0, 'COMMA', 2, 'POINT').replace('.00', '')}"></span> VNĐ</p>
+                                        <p th:if="${order.status == null}">Trạng thái: <span class="badge badge-danger">Đã hủy đơn</span></p>
+                                        <div th:if="${order.status != null}">
+	                                        <p th:if="${order.status}">Trạng thái: <span class="badge badge-success">Đã giao hàng</span></p>                                    
+                                        	<p th:if="${!order.status}">Trạng thái: <span class="badge badge-warning">Đang giao hàng</span></p>
+                                        </div>
+                                        <a th:href="@{'/chi-tiet-don-hang/' + ${order.id}}" class="btn btn-primary">Xem chi tiết</a>
+                                        <a th:if="${order.status == false}" th:href="@{'/huy-don-hang/' + ${order.id}}" 
+                                        	th:attr="data-action-url=@{/huy-don-hang/{orderId}(orderId=${order.id})}"
+                                        	onclick="confirmHuyDon(this.getAttribute('data-action-url'))" class="btn btn-danger">Huỷ đơn hàng</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    		</div>
+    	</div>
+    </div>
+    <a th:href="@{/trangchu}" class="btn btn-warning m-3">Trở về trang chủ</a>
+    <script type="text/javascript">
+    	function confirmHuyDon(actionUrl) {
+    		if (confirm("Bạn chắc chắn muốn hủy đơn hàng chứ?")) {
+                window.location.href = actionUrl;
+            }else {
+            	event.preventDefault();
+            }
+    	}
+    </script>
+</body>
+</html>

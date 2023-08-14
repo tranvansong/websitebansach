@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Checkout</title>
+    <style>
+        .book {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .book .col {
+            display: flex;
+            align-items: center;
+        }
+        .book img {
+        	margin-right: 20px;
+        	width: 100px;
+        	height: 100px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <h2 class="mb-3">Thông tin Đơn hàng</h2>
+            <div class="col-md-12" th:each="cartItem : ${cartItems}">
+                <div class="book">
+                    <div class="row">
+                        <div class="col">
+                            <img th:src="|data:image/jpeg;base64,${cartItem.book.image}|">
+                            <div>
+                                <h5 th:text="${cartItem.book.title}">Tên sản phẩm</h5>
+                                <p th:text="${cartItem.book.author}">Tên tác giả</p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div>
+                                <h5>Số lượng</h5>
+                                <p th:text="${cartItem.quantity}"></p>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div>
+                                <h5>Đơn giá</h5>
+                                <p><span th:text="${#numbers.formatDecimal(cartItem.price, 0, 'COMMA', 2, 'POINT').replace('.00', '')}"></span> VNĐ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Thông tin khách hàng</h4>
+                            </div>
+                            <div class="card-body">
+                                <form th:action="@{/order}" method="post" id="checkoutForm">
+                                    <div class="form-group">
+                                        <label for="name">Họ và tên</label>
+                                        <input type="text" class="form-control" name="name" id="name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" class="form-control" name="email" id="email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address">Địa chỉ</label>
+                                        <input type="text" class="form-control" name="address" id="address" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone">Số điện thoại</label>
+                                        <input type="tel" class="form-control" name="phone" id="phone" required="required">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body" style="font-size: 18px">
+                                <h4>Tổng tiền</h4>
+                                <p>Tổng tiền: <b th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 2, 'POINT').replace('.00', '')}"></b> VNĐ</p>
+                                <hr>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary" id="orderButton">
+                                        Đặt hàng
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        	</div>
+        </section>
+        <a th:href="@{/trangchu}" class="btn btn-warning mb-3">Trở về trang chủ</a>
+    </div>
+    <script>
+        const order_btn = document.getElementById("orderButton");
+        const checkout_frm = document.getElementById("checkoutForm");
+        const name = document.getElementById("name");
+        const email = document.getElementById("email");
+        const diachi = document.getElementById("address");
+        const sdt = document.getElementById("phone");
+        
+        order_btn.addEventListener('click', function() {
+        	if(name.value === '' || email.value === '' || diachi.value === '' || sdt.value === '') {
+        		alert("Vui lòng điền đầy đủ thông tin khách hàng!");
+                return false; // Ngăn không cho form được gửi đi
+        	}else checkout_frm.submit();
+        });
+    </script>    
+</body>
+
+</html>
